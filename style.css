@@ -8,15 +8,15 @@
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
-    color: #333;
+    color: var(--text-color);
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--bg-color);
 }
 
 h1, h2 {
-    color: #2c3e50;
+    color: var(--heading-color);
     margin-bottom: 20px;
 }
 
@@ -26,8 +26,9 @@ h1 {
     border-bottom: 3px solid #3498db;
     padding-bottom: 10px;
     background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;  /* Safari/older Chrome */
+    color: transparent;
     text-align: center;
 }
 
@@ -46,28 +47,30 @@ ul {
 ul li {
     margin: 15px 0;
     font-size: 1.3em;
+    background: transparent;
+    padding: 0;
 }
 
 ul li a {
-    color: #3498db;
+    color: var(--link-color);
+    background: var(--table-header);
     text-decoration: none;
     padding: 10px 20px;
-    background: #ecf0f1;
     border-radius: 25px;
     display: block;
     transition: background 0.3s;
 }
 
 ul li a:hover {
-    background: #3498db;
-    color: white;
+    background: var(--link-color);      /* Theme-aware hover */
+    color: var(--link-hover);           /* Theme-aware text */
 }
 
 /* Divider and about section */
 hr {
     border: none;
     height: 2px;
-    background: #bdc3c7;
+    background: var(--table-header);
     margin: 40px 0;
 }
 
@@ -81,8 +84,8 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: var(--table-bg);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -90,19 +93,19 @@ table {
 /* Fun table hover effect */
 table tr:hover {
     transform: scale(1.02);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
 td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #ecf0f1;
+    td { border-bottom: 1px solid var(--table-header); }
 }
 
 td:first-child {
     font-weight: bold;
     width: 30%;
-    background: #f8f9fa;
+    background: var(--table-header);
 }
 
 /* Cat image animation */
@@ -132,18 +135,22 @@ img:hover {
     }
 }
 
-/* Styles ALL links with class="course-link" across pages */
 .course-link {
-    background: #e74c3c;  /* Red pill-style buttons */
-    color: white;
+    color: var(--link-color);
+    background: var(--table-header);
     padding: 12px 24px;
     border-radius: 50px;
+    display: block;
     font-weight: bold;
+    text-decoration: none;  /* Prevents underline */
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Ensures padding doesn't break */
 }
 
 .course-link:hover {
-    background: #c0392b;
-    transform: scale(1.05);  /* Subtle zoom on hover */
+    background: var(--link-color);
+    color: var(--link-hover);
+    transform: scale(1.05);
 }
 
 /* Styles incomplete list items differently */
@@ -154,11 +161,90 @@ img:hover {
 
 /* Page-specific table */
 .about-table {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--table-bg);  /* Theme table background */
+    color: var(--text-color);
 }
 
 .about-table td:first-child {
-    background: rgba(255,255,255,0.2);
+    background: var(--table-header);  /* Theme header */
 }
 
+
+/* Default light mode */
+:root {
+    --bg-color: #f9f9f9;
+    --text-color: #333;
+    --heading-color: #2c3e50;
+    --link-color: #3498db;
+    --link-hover: white;
+    --table-bg: white;
+    --table-header: #f8f9fa;
+}
+
+/* Page content wrapper */
+.page-content {
+    min-height: 100vh;
+}
+
+.toggle-label {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    background: #ccc;
+    border-radius: 34px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#dark-mode-toggle:checked + .toggle-label {
+    background: #3498db;
+}
+
+.toggle-label::before {
+    content: '';
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+#dark-mode-toggle:checked + .toggle-label::before {
+    transform: translateX(26px);
+}
+
+/* Sun/Moon icons */
+.sun, .moon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+}
+
+.sun { left: 8px; color: #f39c12; }
+.moon { right: 8px; color: #bdc3c7; }
+
+/* Hide checkbox */
+.toggle-checkbox { display: none; }
+
+.theme-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+
+/* Dark mode CLASS */
+body.dark-mode {
+    --bg-color: #1a1a1a;      /* Dark background */
+    --text-color: #e0e0e0;    /* Light text */
+    --heading-color: #ecf0f1; /* Very light headings */
+    --link-color: #74b9ff;    /* Soft blue links */
+    --link-hover: #0984e3;    /* Brighter blue hover */
+    --table-bg: #2d3436;      /* Dark table */
+    --table-header: #636e72;  /* Medium gray headers */
+}
+
+/* Dark mode list styling */
+body.dark-mode ul li {
+    color: var(--text-color);  /* Matches theme text */
+}
